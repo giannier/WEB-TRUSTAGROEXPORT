@@ -64,8 +64,13 @@
     close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="h-5 w-5"><path d="M6 6l12 12M18 6L6 18"/></svg>',
     send: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>',
     camera: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>',
+    image: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>',
     wa: '<svg viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4"><path d="M12 2a10 10 0 00-8.5 15.3L2 22l4.8-1.3A10 10 0 1012 2zm0 18a8 8 0 01-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1112 20z"/></svg>',
   };
+
+  // Foto de perfil del Doctor Trust (rostro recortado del personaje).
+  // Se usa en la cabecera y en cada respuesta del asesor.
+  const AVATAR = '<img src="assets/img/doctor-trust-avatar.png" alt="Doctor Trust" class="h-full w-full rounded-full object-cover" />';
 
   /* ------------------------------------------------------------------ */
   /*  UTILIDADES                                                         */
@@ -117,14 +122,43 @@
   /* ------------------------------------------------------------------ */
   /*  CONSTRUCCIÓN DEL DOM                                               */
   /* ------------------------------------------------------------------ */
-  const launcher = el(
-    "button",
-    "group fixed bottom-6 right-6 z-40 flex items-center gap-2.5 rounded-full bg-brand-500 p-3 text-white shadow-[0_12px_32px_-8px_rgba(116,179,60,0.9)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-600 sm:pr-5",
-    '<span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white/20">' + ICON.sprout + "</span>" +
-      '<span class="hidden text-sm font-semibold sm:block">Doctor Trust</span>'
-  );
-  launcher.type = "button";
-  launcher.setAttribute("aria-label", "Abrir chat con Doctor Trust");
+  // Estilos propios del widget: animaciones del personaje y su posición
+  // relativa a la ventana de chat (para que se quede a un costado al abrir).
+  const styleTag = el("style");
+  styleTag.id = "dt-styles";
+  styleTag.textContent = [
+    "#dt-launcher{transition:transform .55s cubic-bezier(.16,1,.3,1),opacity .3s ease;}",
+    "#dt-launcher .dt-doctor{animation:dtFloat 4.5s ease-in-out infinite;}",
+    "@keyframes dtFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}",
+    "#dt-launcher .dt-doctor img{transition:transform .3s ease;}",
+    "#dt-launcher .dt-doctor:hover img{transform:scale(1.04);}",
+    "#dt-bubble{animation:dtPop .45s cubic-bezier(.16,1,.3,1) both;transition:opacity .25s ease,transform .25s ease;}",
+    "@keyframes dtPop{from{opacity:0;transform:translateY(10px) scale(.9)}to{opacity:1;transform:none}}",
+    "#dt-bubble .dt-tail{position:absolute;right:30px;bottom:-6px;width:14px;height:14px;background:#fff;transform:rotate(45deg);border-bottom-right-radius:3px;}",
+    "#dt-launcher.dt-is-open #dt-bubble{animation:none;opacity:0;transform:translateY(8px) scale(.85);pointer-events:none;}",
+    "@media (min-width:640px){#dt-launcher.dt-is-open{transform:translateX(-420px);}}",
+    "@media (max-width:639px){#dt-launcher.dt-is-open{opacity:0;pointer-events:none;transform:translateY(30px);}}",
+    "@media (prefers-reduced-motion:reduce){#dt-launcher .dt-doctor{animation:none}#dt-bubble{animation:none}}",
+  ].join("");
+  document.head.appendChild(styleTag);
+
+  const launcher = el("div", "fixed bottom-0 right-2 z-40 flex flex-col items-end sm:right-5");
+  launcher.id = "dt-launcher";
+  launcher.innerHTML =
+    // Globo de diálogo que invita a conversar (se oculta al abrir el chat)
+    '<div id="dt-bubble" class="relative mb-1 mr-3 max-w-[232px] cursor-pointer rounded-2xl rounded-br-md bg-white px-4 py-3 shadow-[0_16px_38px_-10px_rgba(10,28,16,0.4)] ring-1 ring-forest-900/5">' +
+      '<button type="button" data-dt-bubble-close aria-label="Cerrar mensaje" class="absolute -right-2 -top-2 grid h-5 w-5 place-items-center rounded-full bg-forest-900 text-white shadow-md transition-colors hover:bg-forest-800">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="h-2.5 w-2.5"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg>' +
+      "</button>" +
+      '<p class="font-display text-sm font-bold leading-tight text-forest-900">¡Hola! Soy el Doctor Trust 🌱</p>' +
+      '<p class="mt-1 text-[13px] leading-snug text-forest-600">¿Dudas con tu cultivo? Escríbeme y te ayudo al instante.</p>' +
+      '<span class="dt-tail"></span>' +
+    "</div>" +
+    // El personaje: es el botón que abre el chat
+    '<button type="button" data-dt-open aria-label="Abrir chat con Doctor Trust" class="dt-doctor group relative block cursor-pointer border-0 bg-transparent p-0">' +
+      '<span class="pointer-events-none absolute inset-x-0 bottom-4 z-0 mx-auto h-5 w-20 rounded-[50%] bg-brand-500/40 blur-lg"></span>' +
+      '<img src="assets/img/doctor-trust.png" alt="Doctor Trust, asesor agronómico" class="relative z-10 w-[122px] drop-shadow-[0_20px_28px_rgba(0,0,0,0.4)] sm:w-[150px]" />' +
+    "</button>";
 
   const panel = el(
     "div",
@@ -135,10 +169,10 @@
   panel.setAttribute("aria-label", "Chat con Doctor Trust");
 
   panel.innerHTML =
-    '<div class="flex h-full flex-col overflow-hidden bg-[#f6f7f3] shadow-2xl sm:rounded-3xl">' +
+    '<div class="relative flex h-full flex-col overflow-hidden bg-[#f6f7f3] shadow-2xl sm:rounded-3xl">' +
       // Header
       '<header class="flex items-center gap-3 bg-forest-950 px-4 py-3">' +
-        '<span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-brand-500 text-white">' + ICON.sprout + "</span>" +
+        '<span class="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-brand-500 ring-1 ring-white/20">' + AVATAR + "</span>" +
         '<div class="min-w-0 flex-1">' +
           '<p class="font-display text-sm font-bold leading-tight text-white">Doctor Trust</p>' +
           '<p class="flex items-center gap-1.5 text-[11px] text-white/60"><span class="inline-block h-1.5 w-1.5 rounded-full bg-brand-400"></span>Asesor agronómico · en línea</p>' +
@@ -153,13 +187,32 @@
       // Composer
       '<footer class="border-t border-forest-100 bg-white p-3">' +
         '<div class="flex items-end gap-2">' +
-          '<button type="button" data-dt-image class="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-forest-500 transition-colors hover:bg-forest-50 hover:text-brand-600" aria-label="Adjuntar foto de tu planta" title="Adjuntar foto">' + ICON.camera + "</button>" +
+          '<div class="relative shrink-0">' +
+            '<button type="button" data-dt-image class="grid h-10 w-10 place-items-center rounded-xl text-forest-500 transition-colors hover:bg-forest-50 hover:text-brand-600" aria-label="Adjuntar foto de tu planta" aria-haspopup="true" aria-expanded="false" title="Adjuntar foto">' + ICON.camera + "</button>" +
+            '<div data-dt-imgmenu class="pointer-events-none absolute bottom-full left-0 z-10 mb-2 w-44 origin-bottom-left scale-95 overflow-hidden rounded-xl border border-forest-100 bg-white opacity-0 shadow-[0_12px_30px_-8px_rgba(10,28,16,0.3)] transition-all duration-150">' +
+              '<button type="button" data-dt-takephoto class="flex w-full items-center gap-2.5 px-3.5 py-3 text-left text-sm font-medium text-forest-800 transition-colors hover:bg-forest-50"><span class="shrink-0 text-brand-600">' + ICON.camera + "</span>Tomar una foto</button>" +
+              '<button type="button" data-dt-uploadphoto class="flex w-full items-center gap-2.5 border-t border-forest-100 px-3.5 py-3 text-left text-sm font-medium text-forest-800 transition-colors hover:bg-forest-50"><span class="shrink-0 text-brand-600">' + ICON.image + "</span>Subir una foto</button>" +
+            "</div>" +
+          "</div>" +
           '<input type="file" data-dt-file accept="image/*" class="hidden" />' +
           '<textarea data-dt-input rows="1" maxlength="' + CONFIG.maxChars + '" placeholder="Escribe tu consulta..." class="max-h-28 flex-1 resize-none rounded-xl border border-forest-200 px-3 py-2.5 text-sm text-forest-900 placeholder:text-forest-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"></textarea>' +
           '<button type="button" data-dt-send class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-500 text-white transition-colors hover:bg-brand-600 disabled:opacity-40" aria-label="Enviar mensaje">' + ICON.send + "</button>" +
         "</div>" +
         '<p class="mt-2 text-center text-[10px] leading-tight text-forest-400">Recomendación orientativa. Para un diagnóstico definitivo, consulta a nuestro equipo técnico.</p>' +
       "</footer>" +
+      // Vista de cámara en vivo (para "Tomar una foto" en laptop y celular)
+      '<div data-dt-camera class="absolute inset-0 z-30 hidden flex-col bg-black">' +
+        '<div class="flex items-center justify-between px-4 py-3">' +
+          '<span class="text-sm font-semibold text-white">Toma una foto de tu planta</span>' +
+          '<button type="button" data-dt-cam-close aria-label="Cerrar cámara" class="grid h-9 w-9 place-items-center rounded-lg text-white/80 transition-colors hover:bg-white/10 hover:text-white">' + ICON.close + "</button>" +
+        "</div>" +
+        '<div class="relative flex-1 overflow-hidden">' +
+          '<video data-dt-video autoplay playsinline muted class="h-full w-full object-cover"></video>' +
+        "</div>" +
+        '<div class="flex items-center justify-center py-5">' +
+          '<button type="button" data-dt-shutter aria-label="Capturar foto" class="grid h-16 w-16 place-items-center rounded-full bg-white/25 ring-4 ring-white/40 transition-transform active:scale-90"><span class="h-12 w-12 rounded-full bg-white"></span></button>' +
+        "</div>" +
+      "</div>" +
     "</div>";
 
   document.body.appendChild(launcher);
@@ -184,7 +237,7 @@
 
     if (!isUser) {
       row.appendChild(
-        el("span", "grid h-7 w-7 shrink-0 place-items-center rounded-full bg-brand-500 text-white", ICON.sprout)
+        el("span", "grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded-full bg-brand-500", AVATAR)
       );
     }
 
@@ -245,7 +298,7 @@
       if ($typing) return;
       $typing = el("div", "flex items-end gap-2");
       $typing.innerHTML =
-        '<span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-brand-500 text-white">' + ICON.sprout + "</span>" +
+        '<span class="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded-full bg-brand-500">' + AVATAR + "</span>" +
         '<div class="flex gap-1 rounded-2xl rounded-bl-md bg-white px-3.5 py-3 shadow-sm">' +
           '<span class="h-1.5 w-1.5 animate-bounce rounded-full bg-forest-300"></span>' +
           '<span class="h-1.5 w-1.5 animate-bounce rounded-full bg-forest-300" style="animation-delay:.15s"></span>' +
@@ -317,9 +370,103 @@
       });
   });
 
-  panel.querySelector("[data-dt-image]").addEventListener("click", function () {
+  const $imgBtn = panel.querySelector("[data-dt-image]");
+  const $imgMenu = panel.querySelector("[data-dt-imgmenu]");
+
+  function openImgMenu() {
+    $imgMenu.classList.remove("pointer-events-none", "opacity-0", "scale-95");
+    $imgBtn.setAttribute("aria-expanded", "true");
+  }
+  function closeImgMenu() {
+    $imgMenu.classList.add("pointer-events-none", "opacity-0", "scale-95");
+    $imgBtn.setAttribute("aria-expanded", "false");
+  }
+
+  $imgBtn.addEventListener("click", function (e) {
+    e.stopPropagation();
+    if ($imgMenu.classList.contains("opacity-0")) openImgMenu();
+    else closeImgMenu();
+  });
+
+  // "Tomar una foto": abre la cámara en vivo (laptop o celular)
+  panel.querySelector("[data-dt-takephoto]").addEventListener("click", function () {
+    closeImgMenu();
+    startCamera();
+  });
+  // "Subir una foto": abre galería / archivos
+  panel.querySelector("[data-dt-uploadphoto]").addEventListener("click", function () {
+    closeImgMenu();
+    $file.removeAttribute("capture");
     $file.click();
   });
+  // Cerrar el menú al hacer clic fuera de él
+  document.addEventListener("click", function (e) {
+    if (!$imgBtn.contains(e.target) && !$imgMenu.contains(e.target)) closeImgMenu();
+  });
+
+  /* --- Cámara en vivo (getUserMedia): funciona en laptop y celular sobre HTTPS --- */
+  const $camera = panel.querySelector("[data-dt-camera]");
+  const $video = panel.querySelector("[data-dt-video]");
+  let camStream = null;
+
+  async function startCamera() {
+    if (imagesSent >= CONFIG.maxImages) {
+      addMessage("assistant", "Ya recibí " + CONFIG.maxImages + " fotos en esta conversación. Si necesitas enviar más, te paso con un asesor.");
+      addHumanCta();
+      return;
+    }
+    // Si el navegador no soporta cámara en vivo (o no es HTTPS), usa el modo nativo del celular
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      $file.setAttribute("capture", "environment");
+      $file.click();
+      return;
+    }
+    try {
+      camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
+      $video.srcObject = camStream;
+      $camera.classList.remove("hidden");
+      $camera.classList.add("flex");
+      try { await $video.play(); } catch (e) {}
+    } catch (err) {
+      stopCamera();
+      if (err && err.name === "NotFoundError") {
+        // No hay cámara: ofrece subir un archivo
+        $file.removeAttribute("capture");
+        $file.click();
+      } else {
+        addMessage("assistant", "No pude abrir la cámara. Revisa que le hayas dado permiso al navegador, o usa **Subir una foto**.");
+      }
+    }
+  }
+
+  function stopCamera() {
+    if (camStream) {
+      camStream.getTracks().forEach(function (t) { t.stop(); });
+      camStream = null;
+    }
+    $video.srcObject = null;
+    $camera.classList.add("hidden");
+    $camera.classList.remove("flex");
+  }
+
+  function capturePhoto() {
+    if (!$video.videoWidth) return;
+    const scale = Math.min(1, CONFIG.maxImageWidth / Math.max($video.videoWidth, $video.videoHeight));
+    const w = Math.round($video.videoWidth * scale);
+    const h = Math.round($video.videoHeight * scale);
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    canvas.getContext("2d").drawImage($video, 0, 0, w, h);
+    const dataUrl = canvas.toDataURL("image/jpeg", CONFIG.imageQuality);
+    stopCamera();
+    pendingImage = dataUrl;
+    showPreview(dataUrl);
+    $input.focus();
+  }
+
+  panel.querySelector("[data-dt-shutter]").addEventListener("click", capturePhoto);
+  panel.querySelector("[data-dt-cam-close]").addEventListener("click", stopCamera);
 
   /* ------------------------------------------------------------------ */
   /*  ENVÍO                                                              */
@@ -439,7 +586,7 @@
     isOpen = true;
     lastFocused = document.activeElement;
     panel.classList.remove("pointer-events-none", "opacity-0");
-    launcher.classList.add("scale-0", "opacity-0");
+    launcher.classList.add("dt-is-open");
     if (window.matchMedia("(max-width: 639px)").matches) document.body.style.overflow = "hidden";
 
     if (!$messages.children.length) {
@@ -455,13 +602,20 @@
   function close() {
     if (!isOpen) return;
     isOpen = false;
+    stopCamera();
     panel.classList.add("pointer-events-none", "opacity-0");
-    launcher.classList.remove("scale-0", "opacity-0");
+    launcher.classList.remove("dt-is-open");
     document.body.style.overflow = "";
     if (lastFocused && lastFocused.focus) lastFocused.focus();
   }
 
-  launcher.addEventListener("click", open);
+  launcher.querySelector("[data-dt-open]").addEventListener("click", open);
+  const $bubble = launcher.querySelector("#dt-bubble");
+  $bubble.addEventListener("click", open);
+  launcher.querySelector("[data-dt-bubble-close]").addEventListener("click", function (e) {
+    e.stopPropagation();
+    $bubble.style.display = "none";
+  });
   panel.querySelector("[data-dt-close]").addEventListener("click", close);
   $send.addEventListener("click", function () { submit(); });
 
