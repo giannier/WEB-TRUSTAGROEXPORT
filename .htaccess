@@ -1,0 +1,84 @@
+# ============================================================================
+# TRUST AGRO EXPORT — .htaccess (cPanel / Apache / LiteSpeed)
+# GZIP, caché, seguridad y protección de carpetas internas del repositorio.
+# El sitio se despliega clonando/actualizando el repo dentro de public_html.
+# ============================================================================
+
+# ---------- Página de error personalizada ----------
+ErrorDocument 404 /404.html
+
+# ---------- Compresión GZIP ----------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+  AddOutputFilterByType DEFLATE application/javascript application/json
+  AddOutputFilterByType DEFLATE application/xml application/rss+xml image/svg+xml
+</IfModule>
+
+# ---------- Caché del navegador — MODO VALIDACIÓN ----------
+# El navegador revalida cada archivo con el servidor, así los cambios se ven al
+# instante mientras seguimos ajustando el sitio (evita el problema de que la
+# gente vea la versión vieja en caché).
+# 👉 Cuando el sitio esté FINAL: comenta este bloque y descomenta el de abajo
+#    (MODO PRODUCCIÓN) para caché larga y mejor rendimiento.
+<IfModule mod_expires.c>
+  ExpiresActive Off
+</IfModule>
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|css|js|webp|png|jpe?g|gif|svg|ico|mp4|woff2?)$">
+    Header set Cache-Control "no-cache, must-revalidate, max-age=0"
+  </FilesMatch>
+</IfModule>
+
+# ---------- Caché del navegador — MODO PRODUCCIÓN (desactivado) ----------
+# <IfModule mod_expires.c>
+#   ExpiresActive On
+#   ExpiresByType text/css "access plus 1 year"
+#   ExpiresByType application/javascript "access plus 1 year"
+#   ExpiresByType image/webp "access plus 6 months"
+#   ExpiresByType image/jpeg "access plus 6 months"
+#   ExpiresByType image/png "access plus 6 months"
+#   ExpiresByType image/svg+xml "access plus 1 year"
+#   ExpiresByType video/mp4 "access plus 6 months"
+#   ExpiresByType text/html "access plus 1 hour"
+# </IfModule>
+
+# ---------- Cabeceras de seguridad ----------
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# ---------- Proteger carpetas internas (solo desarrollo, no son del sitio) ----------
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^(src|n8n|data|node_modules)/ - [F,L]
+  RewriteRule (^|/)\.git(/|$) - [F,L]
+</IfModule>
+
+# ---------- Bloquear .json/.md (código, datos y documentación) ----------
+# Excepción: el manifest PWA sí debe ser público.
+<FilesMatch "\.(json|md)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+</FilesMatch>
+<Files "manifest.json">
+  <IfModule mod_authz_core.c>
+    Require all granted
+  </IfModule>
+</Files>
+
+# ---------- Bloquear archivos de configuración del proyecto ----------
+<FilesMatch "^(package-lock\.json|package\.json|tailwind\.config\.js|\.gitignore)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+</FilesMatch>
+
+# ---------- Forzar HTTPS (descomenta si tu hosting no redirige solo) ----------
+# <IfModule mod_rewrite.c>
+#   RewriteEngine On
+#   RewriteCond %{HTTPS} off
+#   RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+# </IfModule>
