@@ -133,4 +133,33 @@
 
   /* -------------------- 7. Año dinámico footer -------------------- */
   document.querySelectorAll("[data-year]").forEach((el) => (el.textContent = new Date().getFullYear()));
+
+  /* -------------------- 8. Reproductor de video (modal) -------------------- */
+  const videoModal = document.querySelector("[data-video-modal]");
+  if (videoModal) {
+    const videoEl = videoModal.querySelector("[data-video-el]");
+    let lastFocusV = null;
+
+    const openVideo = (e) => {
+      if (e) e.preventDefault();
+      lastFocusV = document.activeElement;
+      videoModal.classList.remove("pointer-events-none", "opacity-0");
+      document.body.style.overflow = "hidden";
+      if (videoEl) {
+        try { videoEl.currentTime = 0; } catch (_) {}
+        const p = videoEl.play();
+        if (p && p.catch) p.catch(() => {}); // si el navegador bloquea el autoplay, quedan los controles
+      }
+    };
+    const closeVideo = () => {
+      videoModal.classList.add("pointer-events-none", "opacity-0");
+      document.body.style.overflow = "";
+      if (videoEl) videoEl.pause();
+      if (lastFocusV && lastFocusV.focus) lastFocusV.focus();
+    };
+
+    document.querySelectorAll("[data-video-open]").forEach((b) => on(b, "click", openVideo));
+    videoModal.querySelectorAll("[data-video-close]").forEach((b) => on(b, "click", closeVideo));
+    on(document, "keydown", (e) => e.key === "Escape" && !videoModal.classList.contains("opacity-0") && closeVideo());
+  }
 })();
