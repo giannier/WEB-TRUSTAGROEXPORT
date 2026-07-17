@@ -1,0 +1,47 @@
+{
+  "_comentario": "PLANTILLA DE PROBLEMA. Sirve para las 3 bibliotecas: plagas, enfermedades y deficiencias nutricionales (se distinguen con el campo 'tipo'). Es lo que el agente consulta cuando el cliente describe un síntoma o sube una foto.",
+
+  "id": "nombre-del-problema",
+  "nombre": "",
+  "tipo": "deficiencia | plaga | enfermedad | fisiopatia",
+  "subtipo": "",
+  "agente_causal": "",
+  "otros_nombres": [],
+  "descripcion": "",
+
+  "sintomas": [],
+  "sintomas_visuales": [],
+  "donde_aparece": "",
+
+  "se_confunde_con": [],
+  "como_diferenciar": "",
+
+  "cultivos_afectados": [],
+  "etapas_criticas": [],
+  "condiciones_favorables": "",
+  "causas": [],
+
+  "prevencion": [],
+  "control": [],
+  "productos_trust": [],
+
+  "urgencia": "baja | media | alta",
+  "observaciones": "",
+
+  "_guia_de_campos": {
+    "tipo": "OBLIGATORIO. deficiencia (falta de nutriente) | plaga (insecto/ácaro) | enfermedad (hongo/bacteria/virus/nematodo) | fisiopatia (golpe de sol, rajado, estrés).",
+    "subtipo": "Para enfermedades: hongo, bacteria, virus, nematodo. Para deficiencias: macronutriente, micronutriente.",
+    "agente_causal": "Nombre científico del hongo/insecto. Ej: Botrytis cinerea, Frankliniella occidentalis.",
+    "otros_nombres": "Cómo le dice el agricultor. Ej: oídio = ceniza, cenicilla.",
+    "sintomas": "CRÍTICO. Escríbelos COMO LOS DIRÍA UN AGRICULTOR, no en lenguaje técnico. Ej: 'hojas amarillas con las venitas verdes' en vez de solo 'clorosis intervenal'.",
+    "sintomas_visuales": "CRÍTICO PARA LAS FOTOS. Qué se ve exactamente en una imagen: color, forma, borde, ubicación (haz/envés, hoja nueva/vieja).",
+    "donde_aparece": "Hoja nueva / hoja vieja / fruto / tallo / raíz / haz / envés. Clave para diferenciar deficiencias.",
+    "se_confunde_com": "",
+    "se_confunde_con": "MUY IMPORTANTE. Con qué otro problema se parece. Evita que el agente se equivoque.",
+    "como_diferenciar": "MUY IMPORTANTE. La pista que usa el agrónomo para distinguirlos. Ej: 'el hierro afecta hojas NUEVAS, el magnesio las VIEJAS'.",
+    "etapas_criticas": "En qué etapa fenológica suele aparecer o hace más daño.",
+    "condiciones_favorables": "Clima/riego/suelo que lo favorecen. Ej: alta humedad y poca ventilación.",
+    "productos_trust": "OBLIGATORIO si tenemos solución. Qué producto nuestro lo resuelve. Si no tenemos, dejar vacío y el agente derivará a un asesor.",
+    "urgencia": "Para que el agente sepa si debe decir 'actúa hoy' o 'puedes planificarlo'."
+  }
+}

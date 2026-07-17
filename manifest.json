@@ -1,0 +1,17 @@
+{
+  "name": "Trust Agro Export",
+  "short_name": "Trust Agro",
+  "description": "Soluciones integrales para el agro: fertilizantes, maquinaria, empaque y asistencia en cultivos.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#0a1c10",
+  "theme_color": "#0a1c10",
+  "icons": [
+    {
+      "src": "assets/img/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "_comentario": "PLANTILLA DE CULTIVO. Uno por cultivo (uva, palta, mango, arándano, cítricos, espárrago...). Le da al agente el contexto para saber qué es normal y qué no en cada etapa.",
+
+  "id": "nombre-del-cultivo",
+  "nombre": "",
+  "nombre_cientifico": "",
+  "otros_nombres": [],
+  "variedades": [],
+  "descripcion": "",
+
+  "etapas_fenologicas": [
+    {
+      "etapa": "",
+      "duracion_aprox": "",
+      "que_ocurre": "",
+      "necesidades_nutricionales": "",
+      "cuidados_clave": "",
+      "productos_trust": []
+    }
+  ],
+
+  "necesidades_nutricionales_generales": {
+    "nitrogeno": "",
+    "fosforo": "",
+    "potasio": "",
+    "calcio": "",
+    "magnesio": "",
+    "micronutrientes": ""
+  },
+
+  "plagas_comunes": [],
+  "enfermedades_comunes": [],
+  "deficiencias_frecuentes": [],
+
+  "suelo_ideal": {
+    "ph": "",
+    "textura": "",
+    "drenaje": "",
+    "materia_organica": "",
+    "conductividad": ""
+  },
+
+  "riego": "",
+  "temperatura": "",
+  "postcosecha": "",
+  "errores_comunes": [],
+  "observaciones": "",
+
+  "_guia_de_campos": {
+    "otros_nombres": "IMPORTANTE. Nombres locales o sinónimos. Ej: palta = aguacate. El cliente escribirá como habla.",
+    "etapas_fenologicas": "CRÍTICO. El agente pregunta la etapa antes de recomendar. Ej: Brotación, Floración, Cuajado, Llenado de fruto, Cosecha, Postcosecha.",
+    "productos_trust": "Qué producto nuestro se recomienda en esa etapa. Así el agente conecta cultivo + etapa -> producto.",
+    "plagas_comunes": "Referenciar por el 'nombre' de las fichas de problema.json.",
+    "errores_comunes": "Lo que el agrónomo ve que el agricultor hace mal. Muy valioso para el agente."
+  }
+}

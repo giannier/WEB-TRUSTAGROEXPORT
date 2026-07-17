@@ -1,0 +1,242 @@
+{
+  "name": "Doctor Trust - Chat web",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "34105e6c-f769-4c35-83aa-d98110b92352",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "id": "e924211b-8ab2-4d41-8cd9-b430671beaae",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-880, -128],
+      "webhookId": "34105e6c-f769-4c35-83aa-d98110b92352",
+      "notes": "Recibe del widget: { sessionId, message, image, history, meta }. responseMode=responseNode y allowedOrigins (CORS) son obligatorios."
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================\n// DOCTOR TRUST - Normaliza lo que llega del widget\n// Salida: { sessionId, message, image, hasImage }\n// ============================================================\n\nconst body = $input.first().json.body || {};\n\nconst message = String(body.message || '').slice(0, 1000).trim();\nconst image = body.image || null;\n\nreturn [{\n  json: {\n    sessionId: body.sessionId || 'anonimo',\n    message: message || (image ? 'El cliente subio una foto de su planta sin escribir texto.' : 'Hola'),\n    image: image,\n    hasImage: !!image,\n    page: (body.meta && body.meta.page) || ''\n  }\n}];"
+      },
+      "id": "b1000000-0000-4000-8000-000000000001",
+      "name": "Preparar entrada",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-660, -128],
+      "notes": "Normaliza y limita el texto. Detecta si viene foto."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cond-img",
+              "leftValue": "={{ $json.hasImage }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b1000000-0000-4000-8000-000000000002",
+      "name": "Hay foto?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [-440, -128],
+      "notes": "true = el cliente subio una foto -> se analiza antes de pasar al agente."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'gpt-4.1-mini', max_tokens: 400, temperature: 0.2, messages: [ { role: 'user', content: [ { type: 'text', text: 'Eres un fitopatologo. Describe de forma OBJETIVA esta foto de un cultivo: que organo se ve (hoja nueva, hoja vieja, fruto, tallo o raiz), color, forma y bordes del dano, en que parte esta y que sintomas visibles hay. NO des diagnostico final ni recomiendes productos: solo describe lo que se ve. Si la foto no es de una planta, dilo. Maximo 120 palabras.' }, { type: 'image_url', image_url: { url: $json.image } } ] } ] }) }}",
+        "options": {
+          "timeout": 45000
+        }
+      },
+      "id": "b1000000-0000-4000-8000-000000000003",
+      "name": "Analizar foto (vision)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-220, -240],
+      "onError": "continueRegularOutput",
+      "notes": "VISION. El AI Agent no acepta imagenes base64, por eso primero describimos la foto y luego le pasamos esa descripcion como texto. Usa la misma credencial de OpenAI."
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================\n// DOCTOR TRUST - Fusiona el analisis de la foto con el mensaje\n// ============================================================\n\nconst prep = $('Preparar entrada').first().json;\n\nlet analisis = '';\ntry {\n  analisis = $input.first().json.choices[0].message.content || '';\n} catch (e) {\n  analisis = '';\n}\n\nconst prompt = analisis\n  ? 'El cliente subio una FOTO de su cultivo. Analisis visual de la imagen:\\n\"\"\"\\n' + analisis + '\\n\"\"\"\\n\\nMensaje del cliente: ' + prep.message\n  : prep.message + '\\n\\n(Nota: el cliente subio una foto pero no se pudo analizar. Pidele que la vuelva a enviar con buena luz y de cerca.)';\n\nreturn [{ json: { prompt: prompt, sessionId: prep.sessionId } }];"
+      },
+      "id": "b1000000-0000-4000-8000-000000000004",
+      "name": "Fusionar foto + texto",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [0, -240],
+      "notes": "Si la vision falla, el agente igual responde el texto."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Sin foto: pasa el mensaje tal cual al agente\nconst j = $input.first().json;\nreturn [{ json: { prompt: j.message, sessionId: j.sessionId } }];"
+      },
+      "id": "b1000000-0000-4000-8000-000000000005",
+      "name": "Solo texto",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-220, -16],
+      "notes": "Rama sin imagen."
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.prompt }}",
+        "options": {
+          "systemMessage": "Eres Doctor Trust, el asesor agronomico virtual de Trust Agro Export, empresa agroexportadora ubicada en Lambayeque, Peru.\n\n## TU MISION\nAyudar a agricultores y empresas agricolas a diagnosticar problemas de sus cultivos y recomendarles la solucion usando EXCLUSIVAMENTE productos y servicios de Trust Agro Export.\n\n## NUESTRAS 4 LINEAS\n- Ynsufert: fertilizantes. Nutricion foliar y edafica, bioestimulantes, correctores, planes de fertirriego, analisis de suelo y agua.\n- Ynsumaq: maquinaria agricola. Tractores, implementos, equipos de riego y bombeo, fumigacion, mantenimiento y repuestos.\n- Ynsupack: insumos de empaque. Jabas cosecheras, parihuelas, cajas y clamshells de exportacion, mallas, zunchos y esquineros.\n- Ynsugrow: asistencia tecnica en campo. Manejo agronomico, nutricion y sanidad vegetal, monitoreo, trazabilidad y buenas practicas agricolas. Cultivos: uva, mango, palta, arandano, citricos y esparrago.\n\n## COMO DEBES CONVERSAR (el metodo del agronomo)\nNUNCA recomiendes sin entender el caso primero. Si te falta informacion, pregunta:\n1. Que cultivo, que variedad y que edad tiene.\n2. En que etapa esta: brotacion, floracion, cuajado, llenado de fruto, cosecha o postcosecha.\n3. Que sintoma observa y desde hace cuanto.\n4. Donde lo ve exactamente: hojas nuevas u hojas viejas, fruto, tallo o raiz. Este dato es clave para diferenciar deficiencias nutricionales.\n5. Zona, tipo de riego y cuando fue la ultima fertilizacion.\n\nHaz como maximo 2 o 3 preguntas por mensaje. No interrogues al cliente. Cuando ya tengas lo necesario, da tu diagnostico y recomienda.\n\n## CUANDO EL CLIENTE SUBA UNA FOTO\nRecibiras un analisis visual objetivo de la imagen entre comillas triples. Usalo asi:\n1. Comenta brevemente lo que se observa.\n2. Da hipotesis ORDENADAS POR PROBABILIDAD. Nunca des un diagnostico categorico solo con una foto.\n3. Di que dato te falta para confirmarlo.\n4. Recomienda el producto o la linea de Trust que corresponde.\n\nPistas de diagnostico que debes aplicar:\n- Hojas NUEVAS amarillas con las nervaduras aun verdes: probable deficiencia de hierro.\n- Hojas VIEJAS amarillas de forma pareja: probable deficiencia de nitrogeno.\n- Hojas VIEJAS amarillas entre las nervaduras: probable deficiencia de magnesio.\n- Frutos rajados: tipicamente deficiencia de calcio mas riego irregular.\n- Puntas de hojas nuevas quemadas: probable deficiencia de calcio.\n\n## REGLAS ESTRICTAS (nunca las rompas)\n- NO inventes productos, dosis, concentraciones ni numeros de registro. Si no tienes el dato exacto, dilo con honestidad y ofrece pasar con un asesor.\n- NO recomiendes productos de otras marcas ni de la competencia.\n- NO des precios, stock, plazos de entrega ni condiciones de credito. Para eso deriva a un asesor.\n- NO afirmes un diagnostico con certeza absoluta si solo tienes una foto o informacion incompleta. Habla siempre de causas probables.\n- NO recomiendes dosis fuera de etiqueta ni manejos que puedan danar el cultivo o a las personas.\n- Si el cliente hace un reclamo, esta molesto o pide hablar con una persona, deriva a un asesor.\n- Si la consulta no tiene relacion con la agricultura ni con nuestras lineas, responde breve y redirige amablemente al tema.\n\n## TONO\nHabla como un ingeniero agronomo peruano conversando con un agricultor: tecnico pero claro, cercano y directo. Trata de tu. Espanol de Peru. Sin relleno ni frases de adorno. Respuestas de 3 a 6 lineas, salvo que te pidan mas detalle. Usa negritas con ** para lo importante y vinetas si ayudan a leer.\n\n## FORMATO DE RESPUESTA (OBLIGATORIO)\nResponde SIEMPRE con un objeto JSON valido y NADA de texto fuera del JSON. No uses bloques de codigo ni ```.\n\n{\"reply\": \"tu respuesta al cliente, puedes usar **negritas** y saltos de linea\", \"products\": [{\"nombre\": \"Ynsufert\", \"url\": \"lineas.html#ynsufert\"}], \"needsHuman\": false}\n\nReglas del JSON:\n- reply: obligatorio. Es lo unico que ve el cliente.\n- products: incluyelo solo si recomiendas una linea. Maximo 2. Las unicas URLs validas son: lineas.html#ynsufert, lineas.html#ynsumaq, lineas.html#ynsupack, lineas.html#ynsugrow\n- needsHuman: ponlo en true cuando debas derivar a un asesor humano (precios, stock, reclamos, o cuando no tengas la informacion necesaria)."
+        }
+      },
+      "id": "40162b4f-5325-43e4-8a96-29cc9bc21426",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [240, -128],
+      "onError": "continueErrorOutput",
+      "notes": "El cerebro. onError=continueErrorOutput -> la 2a salida va al nodo de error. Aqui se le colgaran las herramientas de RAG en la Fase 4."
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "options": {
+          "temperature": 0.3
+        }
+      },
+      "id": "aee74dce-3500-4c77-a9df-3d0ac74541ab",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [160, 80],
+      "credentials": {
+        "openAiApi": {
+          "id": "bvt8Drpei8CJGtiC",
+          "name": "OpenAI account"
+        }
+      },
+      "notes": "temperature 0.3: preciso. No subirla, en agronomia inventar sale caro."
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.sessionId }}",
+        "contextWindowLength": 15
+      },
+      "id": "18ab53a9-499b-4905-a236-260fe1dd14d6",
+      "name": "Simple Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [320, 80],
+      "notes": "Memoria por sessionId. OJO: es volatil, se borra si n8n reinicia. Para produccion usar memoria en Postgres/Redis."
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================\n// DOCTOR TRUST - Formatea la respuesta segun el contrato del widget\n// El AI Agent devuelve el texto en $json.output\n// ============================================================\n\nlet raw = String($input.first().json.output || '').trim();\n\n// El modelo a veces envuelve el JSON en ```json ... ``` -> lo limpiamos\nraw = raw.replace(/^```(?:json)?\\s*/i, '').replace(/\\s*```$/, '').trim();\n\nlet data;\ntry {\n  data = JSON.parse(raw);\n} catch (e) {\n  // Si no es JSON, usamos el texto tal cual como respuesta\n  data = { reply: raw, products: [], needsHuman: false };\n}\n\nconst reply = (data.reply && String(data.reply).trim())\n  ? String(data.reply)\n  : 'No pude procesar tu consulta en este momento. Te paso con un asesor.';\n\n// Solo permitimos URLs de nuestras lineas (evita que el modelo invente enlaces)\nconst OK_URLS = ['lineas.html#ynsufert', 'lineas.html#ynsumaq', 'lineas.html#ynsupack', 'lineas.html#ynsugrow'];\nconst products = Array.isArray(data.products)\n  ? data.products.filter(p => p && p.nombre && OK_URLS.includes(p.url)).slice(0, 2)\n  : [];\n\nreturn [{\n  json: {\n    ok: true,\n    reply: reply,\n    products: products,\n    needsHuman: data.needsHuman === true\n  }\n}];"
+      },
+      "id": "549bf4b5-ba25-4ca6-8c3b-1196218cf14e",
+      "name": "Formatear respuesta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [560, -224],
+      "notes": "Lee $json.output (salida del AI Agent), limpia ``` y filtra URLs inventadas."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Fallback: si el agente falla, el widget igual recibe una respuesta valida\nreturn [{\n  json: {\n    ok: false,\n    reply: 'Disculpa, tuve un problema tecnico al procesar tu consulta. Puedes intentar de nuevo o hablar directo con un asesor.',\n    products: [],\n    needsHuman: true\n  }\n}];"
+      },
+      "id": "9193ad65-b5dd-4222-a3bb-bd62ad0d84f8",
+      "name": "Error - respuesta segura",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [560, -16],
+      "notes": "Conectado a la SALIDA DE ERROR del AI Agent (no a la principal)."
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "id": "96ca198a-2774-40a2-a7d4-4344eef23b20",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [800, -128],
+      "notes": "Devuelve al widget: { ok, reply, products, needsHuman }"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Preparar entrada", "type": "main", "index": 0 }]]
+    },
+    "Preparar entrada": {
+      "main": [[{ "node": "Hay foto?", "type": "main", "index": 0 }]]
+    },
+    "Hay foto?": {
+      "main": [
+        [{ "node": "Analizar foto (vision)", "type": "main", "index": 0 }],
+        [{ "node": "Solo texto", "type": "main", "index": 0 }]
+      ]
+    },
+    "Analizar foto (vision)": {
+      "main": [[{ "node": "Fusionar foto + texto", "type": "main", "index": 0 }]]
+    },
+    "Fusionar foto + texto": {
+      "main": [[{ "node": "AI Agent", "type": "main", "index": 0 }]]
+    },
+    "Solo texto": {
+      "main": [[{ "node": "AI Agent", "type": "main", "index": 0 }]]
+    },
+    "AI Agent": {
+      "main": [
+        [{ "node": "Formatear respuesta", "type": "main", "index": 0 }],
+        [{ "node": "Error - respuesta segura", "type": "main", "index": 0 }]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [[{ "node": "AI Agent", "type": "ai_languageModel", "index": 0 }]]
+    },
+    "Simple Memory": {
+      "ai_memory": [[{ "node": "AI Agent", "type": "ai_memory", "index": 0 }]]
+    },
+    "Formatear respuesta": {
+      "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]]
+    },
+    "Error - respuesta segura": {
+      "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

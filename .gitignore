@@ -1,0 +1,36 @@
+# ============================================================
+#  Trust Agro Export — .gitignore
+# ============================================================
+
+# --- Dependencias (se regeneran con: npm install) ---
+node_modules/
+
+# --- Configuración de Apache ---
+# Excluido a propósito: sus reglas de caché hacen que los visitantes que ya
+# entraron sigan viendo las imágenes viejas hasta 6 meses después de cambiarlas.
+# OJO: si ya lo subiste antes a cPanel, hay que borrarlo/editarlo ALLÁ.
+# Ver nota en LEEME.md sobre caché de imágenes.
+.htaccess
+
+# --- Documentación interna (se queda solo en esta máquina) ---
+# PROGRESO.md, DOCTOR-TRUST.md, LEEME.md, data/README.md, n8n/*.md, etc.
+*.md
+
+# --- Archivos temporales de trabajo ---
+_*.html
+*.tmp
+
+# --- Sistema operativo ---
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# --- Editores ---
+.vscode/
+.idea/
+*.swp
+
+# --- Logs ---
+npm-debug.log*
+*.log

@@ -1,0 +1,32 @@
+{
+  "_comentario": "PLANTILLA DE FAQ. Preguntas frecuentes reales. Las mejores salen de lo que los clientes ya preguntan por WhatsApp o al asesor. En Fase 7 se mide qué pregunta la gente en el chat y se alimenta esta biblioteca.",
+
+  "id": "identificador-corto",
+  "pregunta": "",
+  "otras_formas_de_preguntarlo": [],
+  "respuesta": "",
+  "categoria": "dosis | aplicacion | mezclas | cobertura | precio | logistica | postcosecha | general",
+  "productos_relacionados": [],
+  "cultivos_relacionados": [],
+  "escalar_a_humano": false,
+
+  "_guia_de_campos": {
+    "pregunta": "OBLIGATORIO. Tal como la haría un cliente.",
+    "otras_formas_de_preguntarlo": "Variantes. Ej: '¿cuánto echo?', '¿qué dosis uso?', '¿cuántos litros por hectárea?'. Ayuda a que el buscador la encuentre.",
+    "respuesta": "OBLIGATORIO. Clara y concreta. Si depende del cultivo, explicarlo o remitir a la ficha del producto.",
+    "escalar_a_humano": "true para temas de precio, stock, reclamos o crédito -> el agente ofrecerá contactar a un asesor en vez de responder."
+  },
+
+  "_ejemplos_de_preguntas_a_cargar": [
+    "¿Cuánto Calcio Plus aplico en palta?",
+    "¿Cada cuánto tiempo repito la aplicación?",
+    "¿Puedo mezclar Calcio Plus con azufre?",
+    "¿Cuánto rinde un bidón de 20 L?",
+    "¿Cuántas hectáreas cubre?",
+    "¿Cuánto cuesta?",
+    "¿Hacen despacho a Piura?",
+    "¿Qué jaba me conviene para uva de exportación?",
+    "¿Tienen asesoría técnica en campo?",
+    "¿Cuánto dura el producto una vez abierto?"
+  ]
+}

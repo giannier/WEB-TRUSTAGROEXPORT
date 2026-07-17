@@ -1,0 +1,72 @@
+{
+  "_comentario": "EJEMPLO DE REFERENCIA (datos ilustrativos, NO reales). Muestra el nivel de detalle que necesita el agente. Reemplazar con datos reales validados por un agrónomo antes de usar.",
+
+  "id": "ynsufert-calcio-plus",
+  "nombre": "Calcio Plus",
+  "linea": "Ynsufert",
+  "categoria": "Fertilizante foliar",
+  "descripcion": "Fertilizante foliar a base de calcio y boro, formulado para mejorar la firmeza del fruto y prevenir desórdenes por deficiencia de calcio durante floración y llenado de fruto.",
+
+  "principios_activos": [
+    { "nombre": "Calcio (CaO)", "concentracion": "15%" },
+    { "nombre": "Boro (B)", "concentracion": "0.5%" }
+  ],
+
+  "cultivos": ["Arándano", "Palta", "Aguacate", "Vid", "Uva", "Mango"],
+  "etapas": ["Floración", "Cuajado", "Fructificación"],
+
+  "problemas_que_soluciona": [
+    "Rajado del fruto",
+    "Caída de flores",
+    "Deficiencia de calcio",
+    "Fruto blando",
+    "Baja vida postcosecha"
+  ],
+
+  "sintomas_asociados": [
+    "Se le rajan los frutos",
+    "Se caen las flores antes de cuajar",
+    "El fruto llega blando a la packing",
+    "Puntas de las hojas nuevas quemadas",
+    "Frutos con manchas o pudrición apical"
+  ],
+
+  "beneficios": [
+    "Mayor firmeza del fruto",
+    "Mayor vida postcosecha",
+    "Mejor cuajado",
+    "Fruta de mejor calibre y calidad de exportación"
+  ],
+
+  "dosis": [
+    {
+      "cultivo": "Palta",
+      "dosis": "2 L/ha",
+      "frecuencia": "Cada 15 días desde floración hasta llenado de fruto",
+      "observacion": "Aplicar en las primeras horas de la mañana o al atardecer."
+    },
+    {
+      "cultivo": "Arándano",
+      "dosis": "1.5 L/ha",
+      "frecuencia": "Cada 12-15 días durante cuajado",
+      "observacion": ""
+    },
+    {
+      "cultivo": "Vid",
+      "dosis": "2 L/ha",
+      "frecuencia": "3 aplicaciones desde cuajado",
+      "observacion": "Clave para firmeza de baya en uva de mesa de exportación."
+    }
+  ],
+
+  "modo_aplicacion": ["Foliar"],
+  "compatibilidad": ["Ynsufert Aminoácidos", "Ynsufert Potasio Plus"],
+  "no_mezclar": ["Productos con azufre", "Fosfitos (riesgo de precipitación)"],
+  "presentaciones": ["1 L", "5 L", "20 L"],
+
+  "periodo_carencia": "0 días",
+  "registro_senasa": "",
+  "ficha_tecnica_url": "",
+  "observaciones": "Error común del agricultor: aplicar calcio solo al suelo. El calcio se mueve poco en la planta, por eso la aplicación foliar en floración/cuajado es clave. No mezclar con azufre ni fosfitos: precipita y tapa las boquillas.",
+  "activo": true
+}

@@ -1,0 +1,65 @@
+{
+  "_comentario": "PLANTILLA DE PRODUCTO. Copia este archivo por cada producto. Los campos marcados OBLIGATORIO son los que el agente necesita para poder recomendarlo. Ver ejemplo lleno en ../ejemplos/ynsufert-calcio-plus.json",
+
+  "id": "linea-nombre-del-producto",
+  "nombre": "",
+  "linea": "Ynsufert | Ynsumaq | Ynsupack | Ynsugrow",
+  "categoria": "",
+  "descripcion": "",
+
+  "principios_activos": [
+    { "nombre": "", "concentracion": "" }
+  ],
+
+  "cultivos": [],
+  "etapas": [],
+
+  "problemas_que_soluciona": [],
+  "sintomas_asociados": [],
+
+  "beneficios": [],
+
+  "dosis": [
+    {
+      "cultivo": "",
+      "dosis": "",
+      "frecuencia": "",
+      "observacion": ""
+    }
+  ],
+
+  "modo_aplicacion": [],
+  "compatibilidad": [],
+  "no_mezclar": [],
+  "presentaciones": [],
+
+  "periodo_carencia": "",
+  "registro_senasa": "",
+  "ficha_tecnica_url": "",
+  "observaciones": "",
+  "activo": true,
+
+  "_guia_de_campos": {
+    "id": "OBLIGATORIO. Identificador único, en minúsculas y con guiones.",
+    "nombre": "OBLIGATORIO. Nombre comercial exacto.",
+    "linea": "OBLIGATORIO. A cuál de nuestras 4 líneas pertenece.",
+    "categoria": "Ej: Fertilizante foliar, Bioestimulante, Jaba cosechera, Tractor.",
+    "descripcion": "2-3 líneas. Qué es y para qué sirve, en lenguaje simple.",
+    "principios_activos": "Para fertilizantes: qué contiene y en qué concentración.",
+    "cultivos": "OBLIGATORIO. En qué cultivos se usa. Incluir nombres locales (palta/aguacate).",
+    "etapas": "En qué etapa fenológica se aplica. Ej: Floración, Cuajado, Fructificación.",
+    "problemas_que_soluciona": "OBLIGATORIO Y CRÍTICO. Si está vacío, el agente NO podrá recomendar este producto cuando el cliente describa su problema.",
+    "sintomas_asociados": "CRÍTICO. Los síntomas TAL COMO LOS DIRÍA UN AGRICULTOR. Ej: 'se le rajan los frutos', 'se caen las flores'.",
+    "beneficios": "Qué gana el agricultor. Ej: mayor firmeza, más vida postcosecha.",
+    "dosis": "CRÍTICO. Una entrada por cultivo. Si no sabes la dosis exacta, DÉJALA VACÍA (el agente dirá que consulte a un asesor). Nunca inventes.",
+    "modo_aplicacion": "Ej: Foliar, Fertirriego, Drench, Suelo.",
+    "compatibilidad": "Con qué productos SÍ se puede mezclar.",
+    "no_mezclar": "IMPORTANTE por seguridad. Con qué NO se debe mezclar.",
+    "presentaciones": "Ej: 1 L, 5 L, 20 L, saco 25 kg.",
+    "periodo_carencia": "Días entre la última aplicación y la cosecha (si aplica).",
+    "registro_senasa": "Número de registro, si lo tiene.",
+    "ficha_tecnica_url": "Link al PDF de la ficha técnica.",
+    "observaciones": "Cualquier detalle útil: precauciones, tips del agrónomo, errores comunes.",
+    "activo": "false si se descontinuó (el agente dejará de recomendarlo)."
+  }
+}

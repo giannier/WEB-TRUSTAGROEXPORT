@@ -1,0 +1,250 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   TRUST AGRO EXPORT — Sistema de diseño
+   Tokens, tipografía, componentes y animaciones (Framer-like con CSS + JS)
+   ========================================================================== */
+
+@layer base {
+  :root {
+    --header-h: 76px;
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --brand: #74b33c;
+    --brand-600: #5a9a2c;
+    --forest-950: #0a1c10;
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: var(--header-h);
+    overflow-x: hidden;
+  }
+
+  body {
+    @apply bg-[#f6f7f3] font-sans text-forest-900 antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold tracking-tight;
+    text-wrap: balance;
+  }
+
+  ::selection {
+    @apply bg-brand-500/25 text-forest-950;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 12px; height: 12px; }
+  ::-webkit-scrollbar-track { background: #eef0ea; }
+  ::-webkit-scrollbar-thumb {
+    background: #b9d3bd; border-radius: 999px; border: 3px solid #eef0ea;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: #8db494; }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand-500 ring-offset-2 ring-offset-white rounded;
+  }
+}
+
+@layer components {
+
+  /* ---------- Layout ---------- */
+  .container-x {
+    @apply mx-auto w-full max-w-content px-5 sm:px-8 lg:px-10;
+  }
+
+  .section {
+    @apply py-20 sm:py-24 lg:py-28;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-brand-600;
+  }
+  .eyebrow::before {
+    content: "";
+    @apply h-px w-8 bg-brand-500;
+  }
+  .eyebrow--light { @apply text-brand-300; }
+  .eyebrow--light::before { @apply bg-brand-400; }
+
+  .heading-1 {
+    @apply font-display text-4xl leading-[1.05] sm:text-5xl lg:text-6xl xl:text-[4.25rem];
+  }
+  .heading-2 {
+    @apply font-display text-3xl leading-[1.1] sm:text-4xl lg:text-[2.75rem];
+  }
+  .heading-3 {
+    @apply font-display text-2xl leading-tight sm:text-3xl;
+  }
+  .lede {
+    @apply text-base leading-relaxed text-forest-500 sm:text-lg;
+  }
+  .text-accent { @apply text-brand-500; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    @apply relative inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5
+           text-sm font-semibold leading-none transition-all duration-300 ease-out-expo
+           will-change-transform;
+  }
+  .btn svg { @apply h-4 w-4 transition-transform duration-300 ease-out-expo; }
+  .btn:hover svg { @apply translate-x-1; }
+
+  .btn-primary {
+    @apply btn bg-brand-500 text-white shadow-[0_10px_28px_-10px_rgba(116,179,60,0.9)]
+           hover:bg-brand-600 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-12px_rgba(116,179,60,0.9)];
+  }
+  .btn-light {
+    @apply btn bg-white text-forest-900 shadow-soft hover:-translate-y-0.5 hover:shadow-card;
+  }
+  .btn-outline {
+    @apply btn border border-forest-200 bg-transparent text-forest-800
+           hover:border-brand-500 hover:text-brand-600 hover:-translate-y-0.5;
+  }
+  .btn-outline-light {
+    @apply btn border border-white/25 bg-white/5 text-white backdrop-blur
+           hover:border-white/60 hover:bg-white/10 hover:-translate-y-0.5;
+  }
+  .btn-ghost-light {
+    @apply btn text-white/90 hover:text-white;
+  }
+
+  /* ---------- Navbar ---------- */
+  .nav-link {
+    @apply relative text-sm font-medium text-white/80 transition-colors duration-200 hover:text-white;
+  }
+  .nav-link::after {
+    content: "";
+    @apply absolute -bottom-1.5 left-0 h-0.5 w-0 rounded-full bg-brand-400 transition-all duration-300 ease-out-expo;
+  }
+  .nav-link:hover::after,
+  .nav-link[aria-current="page"]::after { @apply w-full; }
+  .nav-link[aria-current="page"] { @apply text-brand-300; }
+
+  /* Navbar en modo claro (cuando hace scroll) */
+  /* Nota: sin backdrop-blur en el header. Un backdrop-filter en el <header> (ancestro del
+     menú móvil fixed) rompe el renderizado del panel del menú al hacer scroll (se vuelve
+     transparente). Se usa un fondo casi opaco en su lugar. */
+  .site-header.is-scrolled { @apply bg-forest-950/95 shadow-[0_8px_30px_-12px_rgba(10,28,16,0.6)]; }
+  .site-header.is-scrolled .nav-link { @apply text-white/85 hover:text-white; }
+
+  /* ---------- Cards ---------- */
+  .card {
+    @apply relative overflow-hidden rounded-2xl bg-white shadow-card transition-all duration-500 ease-out-expo;
+  }
+  .card-hover {
+    @apply hover:-translate-y-2 hover:shadow-card-hover;
+  }
+
+  .line-card {
+    @apply relative flex flex-col overflow-hidden rounded-[26px] bg-white shadow-card
+           transition-all duration-500 ease-out-expo hover:-translate-y-2 hover:shadow-card-hover;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full bg-brand-500/10 px-3 py-1 text-xs font-semibold text-brand-700;
+  }
+  .chip-dark {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.08] px-3 py-1
+           text-[11px] font-semibold uppercase tracking-wide text-brand-200 backdrop-blur;
+  }
+
+  /* Icono redondo verde (líneas / features) */
+  .icon-badge {
+    @apply grid h-14 w-14 place-items-center rounded-2xl bg-brand-500 text-white shadow-[0_10px_24px_-8px_rgba(116,179,60,0.8)];
+  }
+  .icon-badge-soft {
+    @apply grid h-12 w-12 place-items-center rounded-xl bg-brand-500/10 text-brand-600;
+  }
+
+  /* Feature check list */
+  .check-item {
+    @apply flex items-start gap-3 text-forest-700;
+  }
+  .check-item .dot {
+    @apply mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-brand-500 text-white;
+  }
+
+  /* Panel oscuro / superficies */
+  .surface-dark {
+    @apply relative bg-forest-950 text-white;
+  }
+  .surface-glass {
+    @apply rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-md;
+  }
+
+  /* Divider verde en el logo/acentos */
+  .stat-value {
+    @apply font-display text-4xl font-extrabold leading-none text-white sm:text-5xl;
+  }
+
+  /* Input */
+  .field {
+    @apply w-full rounded-xl border border-forest-200 bg-white px-4 py-3 text-sm text-forest-900
+           placeholder:text-forest-400 transition-colors duration-200
+           focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/20;
+  }
+  .field-dark {
+    @apply w-full rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-sm text-white
+           placeholder:text-white/40 transition-colors duration-200
+           focus:border-brand-400 focus:outline-none focus:ring-4 focus:ring-brand-500/20;
+  }
+  .field-label {
+    @apply mb-1.5 block text-sm font-medium text-forest-700;
+  }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .text-pretty { text-wrap: pretty; }
+
+  /* Gradiente de acento en texto (palabra resaltada) */
+  .text-gradient-brand {
+    @apply bg-gradient-to-r from-brand-400 to-brand-500 bg-clip-text text-transparent;
+  }
+
+  /* Máscara para imágenes con fundido inferior */
+  .mask-fade-b {
+    -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 60%, transparent 100%);
+  }
+
+  /* Fondo con textura de grano sutil */
+  .bg-grain { background-image: theme('backgroundImage.grain'); }
+
+  /* ------- Reveal on scroll (motor de animación tipo Framer Motion) ------- */
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s var(--ease-out-expo), transform 0.7s var(--ease-out-expo);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+  [data-reveal="left"]  { transform: translateX(-32px); }
+  [data-reveal="right"] { transform: translateX(32px); }
+  [data-reveal="scale"] { transform: scale(0.94); }
+  [data-reveal="fade"]  { transform: none; }
+
+  [data-reveal].is-visible {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+/* Respeta usuarios con movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  [data-reveal] { opacity: 1 !important; transform: none !important; }
+}
