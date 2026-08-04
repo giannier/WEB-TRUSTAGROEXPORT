@@ -16,7 +16,7 @@
     // ⬇️ URL DEL WEBHOOK DE n8n (dejar vacío = modo demo con respuestas simuladas)
     webhookUrl: "https://n8n.corporacionyanayacu.com/webhook/34105e6c-f769-4c35-83aa-d98110b92352",
 
-    whatsapp: "51987664321",     // escalado a asesor humano
+    whatsapp: "51984118358",     // escalado a asesor humano
     maxImages: 3,                // máx. fotos por sesión (control de costo)
     maxImageWidth: 1024,         // se redimensiona antes de enviar
     imageQuality: 0.8,           // calidad JPEG

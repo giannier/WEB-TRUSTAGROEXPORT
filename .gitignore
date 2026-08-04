@@ -23,3 +23,6 @@ Desktop.ini
 # --- Logs ---
 npm-debug.log*
 *.log
+
+# --- Herramientas (skill registry cache) ---
+.atl/
