@@ -26,3 +26,7 @@ npm-debug.log*
 
 # --- Herramientas (skill registry cache) ---
 .atl/
+
+# --- Libro de Reclamaciones (credenciales y registros) ---
+config.smtp.php
+reclamaciones/

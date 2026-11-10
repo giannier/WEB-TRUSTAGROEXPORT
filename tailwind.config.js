@@ -2,6 +2,7 @@
 module.exports = {
   content: [
     "./*.html",
+    "./*.php",
     "./lineas/**/*.html",
     "./assets/js/**/*.js",
   ],

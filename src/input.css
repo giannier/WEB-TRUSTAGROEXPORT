@@ -182,6 +182,28 @@
   }
   .cert-plate img { @apply block h-auto w-full; }
 
+  /* Libro de Reclamaciones badge (INDECOPI): square white card, works on dark and light footers */
+  .reclam-card {
+    display: block;
+    width: 130px;
+    overflow: hidden;
+    border-radius: 1rem;
+    background: #fff;
+    box-shadow: 0 6px 20px -6px rgba(0, 0, 0, 0.35);
+    outline: 1px solid rgba(0, 0, 0, 0.06);
+    outline-offset: -1px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .reclam-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px -8px rgba(0, 0, 0, 0.5);
+  }
+  .reclam-card img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+  @media (prefers-reduced-motion: reduce) {
+    .reclam-card { transition: none; }
+    .reclam-card:hover { transform: none; }
+  }
+
   .surface-glass {
     @apply rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-md;
   }
