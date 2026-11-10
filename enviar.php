@@ -17,7 +17,7 @@
  */
 
 // ---- CONFIGURA AQUÍ ----
-$destinatario = 'info@trustagro.com';
+$destinatario = 'comercial@trustagroexport.com';
 $remitente    = 'no-reply@trustagroexport.com';
 $asunto_base  = 'Nueva solicitud de cotización — Web Trust Agro Export';
 // ------------------------
