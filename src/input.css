@@ -176,6 +176,12 @@
   .surface-dark {
     @apply relative bg-forest-950 text-white;
   }
+  /* ISO certification badge: white plate keeps the transparent raster legible on dark/photo backgrounds */
+  .cert-plate {
+    @apply inline-block rounded-2xl bg-white p-3 shadow-card ring-1 ring-black/5;
+  }
+  .cert-plate img { @apply block h-auto w-full; }
+
   .surface-glass {
     @apply rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-md;
   }
