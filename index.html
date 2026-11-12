@@ -127,10 +127,6 @@
 
       <div class="container-x grid w-full grid-cols-1 items-center gap-10 py-16 lg:grid-cols-[1.05fr_0.95fr]">
         <div>
-          <span class="chip-dark mb-6" data-reveal="fade">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3.5 w-3.5"><path d="M12 2v20M2 12h20" stroke-linecap="round"/></svg>
-            Agroexportación de calidad
-          </span>
           <h1 class="heading-1 text-white" data-reveal>
             IMPULSAMOS<br />EL CAMPO,<br />
             <span class="text-gradient-brand">CONECTAMOS</span><br />AL MUNDO.
@@ -149,18 +145,17 @@
               Ver video
             </a>
           </div>
-          <figure class="mt-10 flex items-center gap-4" data-reveal style="--reveal-delay:300ms">
-            <span class="cert-plate w-[170px] sm:w-[200px]">
-              <img src="assets/img/certificaciones/iso14001.svg" alt="Certificación ISO 14001 – Sistema de Gestión Ambiental" width="648" height="318" decoding="async" fetchpriority="low" />
-            </span>
-            <figcaption class="max-w-[11rem] text-xs font-semibold uppercase leading-snug tracking-[0.14em] text-white/70">ISO 14001<br />Sistema de Gestión Ambiental</figcaption>
-          </figure>
         </div>
 
         <!-- Lockup grande del logo -->
         <div class="hidden justify-end lg:flex" data-reveal="right" style="--reveal-delay:200ms">
           <img src="assets/img/logo-light.png" alt="Trust Agro Export" class="w-[540px] max-w-full drop-shadow-2xl xl:w-[660px]" />
         </div>
+      </div>
+
+      <!-- ISO versión blanca (desktop): arriba a la derecha, cerca del menú -->
+      <div class="container-x absolute inset-x-0 top-[calc(var(--header-h)+2.5rem)] hidden justify-end lg:flex">
+        <img src="assets/img/certificaciones/iso-trust-white.webp" alt="Certificación ISO 14001 – Sistema de Gestión Ambiental" width="800" height="392" decoding="async" class="w-[260px]" />
       </div>
     </section>
 
@@ -361,9 +356,6 @@
         <div>
           <img src="assets/img/logo-light.png" alt="Trust Agro Export" width="900" height="309" class="h-12 w-auto" />
           <p class="mt-5 max-w-xs text-sm leading-relaxed text-white/55">Brindando soluciones integrales para una agricultura más productiva, sostenible y competitiva.</p>
-          <span class="cert-plate mt-6 w-[180px]">
-            <img src="assets/img/certificaciones/iso14001.svg" alt="Certificación ISO 14001 – Sistema de Gestión Ambiental" width="648" height="318" decoding="async" loading="lazy" />
-          </span>
           <div class="mt-6">
             <a href="libro-de-reclamaciones.php" class="reclam-card" title="Libro de Reclamaciones Virtual – Ley N° 29571" aria-label="Libro de Reclamaciones virtual">
               <picture>
@@ -408,6 +400,9 @@
             <li class="flex items-center gap-3"><svg viewBox="0 0 24 24" fill="none" stroke="#8dc054" stroke-width="1.75" class="h-5 w-5 shrink-0"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><a href="mailto:comercial@trustagroexport.com" class="hover:text-white">comercial@trustagroexport.com</a></li>
             <li class="flex items-start gap-3"><svg viewBox="0 0 24 24" fill="none" stroke="#8dc054" stroke-width="1.75" class="mt-0.5 h-5 w-5 shrink-0"><path d="M12 21s7-6 7-11a7 7 0 10-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Km. 5 Carretera a Chiclayo, Lambayeque, Perú</span></li>
           </ul>
+          <span class="cert-plate mt-6 w-[180px]">
+            <img src="assets/img/certificaciones/iso14001.svg" alt="Certificación ISO 14001 – Sistema de Gestión Ambiental" width="648" height="318" decoding="async" loading="lazy" />
+          </span>
           <form class="mt-6" data-newsletter novalidate>
             <label for="nl-email" class="text-[11px] font-bold uppercase tracking-[0.18em] text-brand-300">Newsletter</label>
             <div class="mt-2 flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.04] p-1.5 pl-4">
