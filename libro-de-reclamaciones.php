@@ -26,9 +26,9 @@ if (file_exists($smtpConfigFile)) {
     require $smtpConfigFile;
 }
 
-if (!defined('EMPRESA_RAZON_SOCIAL')) define('EMPRESA_RAZON_SOCIAL', 'RAZON_SOCIAL_AQUI');
-if (!defined('EMPRESA_RUC'))          define('EMPRESA_RUC', 'RUC_AQUI');
-if (!defined('EMPRESA_DIRECCION'))    define('EMPRESA_DIRECCION', 'Km. 5 Carretera a Chiclayo, Lambayeque, Perú');
+if (!defined('EMPRESA_RAZON_SOCIAL')) define('EMPRESA_RAZON_SOCIAL', 'TRUST AGRO EXPORT S.A.C.S');
+if (!defined('EMPRESA_RUC'))          define('EMPRESA_RUC', '20616573552');
+if (!defined('EMPRESA_DIRECCION'))    define('EMPRESA_DIRECCION', 'Av. República de Chile N.º 324, Int. 601, Urb. Santa Beatriz (Edificio Polaris), Jesús María, Lima, Perú');
 if (!defined('EMPRESA_EMAIL'))        define('EMPRESA_EMAIL', 'reclamaciones@trustagroexport.com');
 if (!defined('EMPRESA_NOTIF_EMAIL'))  define('EMPRESA_NOTIF_EMAIL', EMPRESA_EMAIL);
 if (!defined('SMTP_PORT'))            define('SMTP_PORT', 465);

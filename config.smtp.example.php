@@ -14,9 +14,9 @@ define('SMTP_FROM_NAME', 'Trust Agro Export');
 define('EMPRESA_NOTIF_EMAIL', 'reclamaciones@trustagroexport.com');
 
 // Legal data shown on the complaint sheet (replace with the real values).
-define('EMPRESA_RAZON_SOCIAL', 'RAZON_SOCIAL_AQUI');
-define('EMPRESA_RUC', 'RUC_AQUI');
-define('EMPRESA_DIRECCION', 'Km. 5 Carretera a Chiclayo, Lambayeque, Perú');
+define('EMPRESA_RAZON_SOCIAL', 'TRUST AGRO EXPORT S.A.C.S');
+define('EMPRESA_RUC', '20616573552');
+define('EMPRESA_DIRECCION', 'Av. República de Chile N.º 324, Int. 601, Urb. Santa Beatriz (Edificio Polaris), Jesús María, Lima, Perú');
 
 // hCaptcha (https://dashboard.hcaptcha.com)
 define('HCAPTCHA_SITE_KEY',   'TU_SITE_KEY_AQUI');
